@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Candy Land Race 🍬</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="decor-layer" id="decorLayer"></div>
+<div id="toast-stack"></div>
+
+<header>
+  <h1 class="title" id="titleText"></h1>
+  <div class="ribbon">🍭 RACE TO THE CASTLE 🍭</div>
+  <p class="subtitle">Draw a card, hop to the next matching candy &amp; race the computer! <span class="duck">🦆</span></p>
+
+  <div class="hud">
+    <div class="hud-pill" id="turnPill">Turn <span id="turnCount">0</span></div>
+    <button class="hud-pill hud-btn" id="rulesBtn" type="button">❓ How to Play</button>
+    <button class="hud-pill hud-btn" id="restartBtn" type="button">🔄 Restart</button>
+  </div>
+</header>
+
+<main>
+  <div class="layout">
+    <section class="board-wrap">
+      <div class="board" id="board">
+        <svg viewBox="0 0 900 2150" preserveAspectRatio="none" aria-hidden="true">
+          <path id="roadOutline"
+            d="M450,50 C600,120 700,150 700,300 C700,380 640,400 620,430 C620,485 575,530 520,530 C465,530 420,485 420,430 C420,375 465,330 520,330 C575,330 620,375 620,430 C520,500 300,550 170,620 C170,730 700,780 700,940 C700,1020 530,1080 510,1150 C510,1211 461,1261 400,1261 C339,1261 290,1211 290,1150 C290,1089 339,1039 400,1039 C461,1039 510,1089 510,1150 C400,1250 250,1350 170,1450 C170,1560 700,1600 700,1770 C700,1900 450,1950 450,2080"
+            fill="none" stroke="#f0dcc0" stroke-width="46" stroke-linecap="round"/>
+          <path id="boardPath"
+            d="M450,50 C600,120 700,150 700,300 C700,380 640,400 620,430 C620,485 575,530 520,530 C465,530 420,485 420,430 C420,375 465,330 520,330 C575,330 620,375 620,430 C520,500 300,550 170,620 C170,730 700,780 700,940 C700,1020 530,1080 510,1150 C510,1211 461,1261 400,1261 C339,1261 290,1211 290,1150 C290,1089 339,1039 400,1039 C461,1039 510,1089 510,1150 C400,1250 250,1350 170,1450 C170,1560 700,1600 700,1770 C700,1900 450,1950 450,2080"
+            fill="none" stroke="#fff8ec" stroke-width="32" stroke-linecap="round"/>
+        </svg>
+        <div id="spacesLayer"></div>
+        <div id="tokensLayer"></div>
+        <div class="flag" style="top:2%;"><div class="flag-badge">🚩 START</div></div>
+        <div class="castle-marker" id="castleMarker"><span>🏰</span></div>
+      </div>
+    </section>
+
+    <aside class="side-panel">
+      <div class="panel-card" id="playersPanel">
+        <h3>🍬 Racers</h3>
+        <div id="playersList"></div>
+      </div>
+
+      <div class="panel-card draw-card-area">
+        <h3>🎴 Draw a Candy Card</h3>
+        <div class="card-slot" id="cardSlot">
+          <div class="candy-card back" id="candyCard">
+            <span class="card-face-back">🍬</span>
+          </div>
+        </div>
+        <button class="btn btn-draw" id="drawBtn">🎴 Draw Card</button>
+      </div>
+
+      <div class="panel-card leaderboard-card">
+        <h3>🏆 Fastest Trails <span class="lb-mode" id="lbMode">…</span></h3>
+        <div class="lb-sub">Ranked by fewest turns to reach Candy Castle</div>
+        <ol id="leaderboardList" class="leaderboard-list"><li class="lb-empty">Loading…</li></ol>
+        <button class="btn btn-refresh" id="refreshLbBtn" type="button">↻ Refresh</button>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer>Made with 🍬 + 💻 — a Candy Land‑style race game</footer>
+
+<!-- Start / setup modal -->
+<div class="overlay open" id="startOverlay">
+  <div class="modal" id="startModal">
+    <div class="modal-emoji">🍭🏰🍬</div>
+    <h2>Candy Land Race</h2>
+    <p class="modal-copy">Draw candy cards, hop along the trail, and be first to reach Candy Castle! Fewer turns wins the leaderboard.</p>
+    <label class="field-label" for="playerNameInput">Your name</label>
+    <input type="text" id="playerNameInput" class="text-input" maxlength="18" placeholder="Enter your name" value="Player">
+    <label class="field-label" for="opponentCount">Computer opponents</label>
+    <select id="opponentCount" class="text-input">
+      <option value="1">1 opponent</option>
+      <option value="2" selected>2 opponents</option>
+      <option value="3">3 opponents</option>
+    </select>
+    <button class="btn btn-next" id="startGameBtn">🎉 Start Race!</button>
+  </div>
+</div>
+
+<!-- Rules modal -->
+<div class="overlay" id="rulesOverlay">
+  <div class="modal" id="rulesModal">
+    <button class="modal-close" id="rulesClose" aria-label="Close">✕</button>
+    <div class="modal-emoji">📜🍬</div>
+    <h2>How to Play</h2>
+    <div class="modal-section show">
+      Tap <b>Draw Card</b> to reveal a candy colour. Your piece hops forward to the next space of that colour. Then each computer racer takes its turn automatically.
+      <br><br>
+      Watch out for special spaces: <b>🍫 Molasses Swamp</b> makes you skip your next turn, and <b>🍭 Gumdrop Pass</b> zooms you forward!
+      <br><br>
+      First to reach <b>🏰 Candy Castle</b> wins. If you win, your <b>turn count</b> is saved to the leaderboard — fewer turns is better!
+    </div>
+  </div>
+</div>
+
+<!-- Game end modal -->
+<div class="overlay" id="endOverlay">
+  <div class="modal" id="endModal">
+    <div id="endModalContent"></div>
+  </div>
+</div>
+
+<script type="module" src="game.js"></script>
+</body>
+</html>
