@@ -195,6 +195,7 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
   var questionPtr = 0;
   var currentQuestion = null;
   var answered = false;
+  var usedQuestionIndices = [];
 
   var startTime = 0;
   var timerHandle = null;
@@ -436,8 +437,35 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
 
   var OPTION_LETTERS = ['A','B','C','D'];
 
+  var USED_QUESTIONS_KEY = 'candyland_race_used_questions_v1';
+
+  function loadUsedQuestionIndices(){
+    try{
+      var raw = localStorage.getItem(USED_QUESTIONS_KEY);
+      var arr = raw ? JSON.parse(raw) : [];
+      if(!Array.isArray(arr)) return [];
+      return arr.filter(function(i){ return Number.isInteger(i) && i >= 0 && i < QUESTIONS.length; });
+    }catch(err){
+      return [];
+    }
+  }
+
+  function saveUsedQuestionIndices(){
+    try{
+      localStorage.setItem(USED_QUESTIONS_KEY, JSON.stringify(usedQuestionIndices));
+    }catch(err){ /* ignore */ }
+  }
+
+  // Builds this game's draw order: every question not yet asked since the
+  // last full cycle comes first (shuffled), so a question only repeats
+  // once every question has already been used at least once.
   function buildQuestionPool(){
-    questionPool = shuffle(QUESTIONS);
+    usedQuestionIndices = loadUsedQuestionIndices();
+    var usedSet = usedQuestionIndices;
+    var allIndices = QUESTIONS.map(function(_, i){ return i; });
+    var freshIndices = shuffle(allIndices.filter(function(i){ return usedSet.indexOf(i) === -1; }));
+    var repeatIndices = shuffle(usedSet.slice());
+    questionPool = freshIndices.concat(repeatIndices);
     questionPtr = 0;
   }
 
@@ -446,9 +474,18 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
       endGame(false, 'outOfQuestions');
       return;
     }
-    currentQuestion = questionPool[questionPtr++];
+    var idx = questionPool[questionPtr++];
+    currentQuestion = QUESTIONS[idx];
     answered = false;
     renderQuestion(currentQuestion);
+
+    if(usedQuestionIndices.indexOf(idx) === -1){
+      usedQuestionIndices.push(idx);
+      if(usedQuestionIndices.length >= QUESTIONS.length){
+        usedQuestionIndices = []; // full cycle complete — the next game starts fresh
+      }
+      saveUsedQuestionIndices();
+    }
   }
 
   function renderQuestion(q){
