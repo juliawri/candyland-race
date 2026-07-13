@@ -228,6 +228,7 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
 
   var startOverlay = document.getElementById('startOverlay');
   var heroStartBtn = document.getElementById('heroStartBtn');
+  var startClose = document.getElementById('startClose');
   var playerNameInput = document.getElementById('playerNameInput');
   var emojiGrid = document.getElementById('emojiGrid');
   var startGameBtn = document.getElementById('startGameBtn');
@@ -720,6 +721,8 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
 
   heroStartBtn.addEventListener('click', function(){ openOverlay(startOverlay); });
   startGameBtn.addEventListener('click', newGame);
+  startClose.addEventListener('click', function(){ closeOverlay(startOverlay); });
+  startOverlay.addEventListener('click', function(e){ if(e.target === startOverlay) closeOverlay(startOverlay); });
   restartBtn.addEventListener('click', function(){
     gameOver = true;
     stopTimer();
@@ -731,7 +734,7 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
   rulesClose.addEventListener('click', function(){ closeOverlay(rulesOverlay); });
   rulesOverlay.addEventListener('click', function(e){ if(e.target === rulesOverlay) closeOverlay(rulesOverlay); });
   document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape'){ closeOverlay(rulesOverlay); }
+    if(e.key === 'Escape'){ closeOverlay(rulesOverlay); closeOverlay(startOverlay); }
   });
 
   /* ============================== LEADERBOARD ============================== */
