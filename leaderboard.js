@@ -7,7 +7,8 @@
 // LOCAL leaderboard stored in this browser's localStorage so the game
 // always works out of the box.
 //
-// Ranking: fewer turns to reach Candy Castle = better score.
+// Ranking: higher score = better. Score combines speed and accuracy
+// (fewer trivia questions + less time taken to reach Candy Castle).
 // ─────────────────────────────────────────────────────────────────────────
 
 import { firebaseConfig } from "./firebase-config.js";
@@ -65,16 +66,18 @@ function saveLocalScores(scores){
 /**
  * Submit a finished game's score.
  * @param {string} name - player display name
- * @param {number} turns - number of turns taken to win (lower is better)
- * @param {number} opponents - number of AI opponents in that race
+ * @param {number} score - combined speed + accuracy score (higher is better)
+ * @param {number} turns - number of trivia questions answered to win
+ * @param {number} timeSeconds - time taken to win, in seconds
  * @returns {Promise<{ok:boolean, mode:'global'|'local'}>}
  */
-export async function submitScore(name, turns, opponents){
+export async function submitScore(name, score, turns, timeSeconds){
   await readyPromise;
   const entry = {
     name: String(name || "Player").slice(0, 18),
+    score: Math.max(0, Math.round(score)),
     turns: Math.max(1, Math.round(turns)),
-    opponents: Math.max(1, Math.round(opponents)),
+    timeSeconds: Math.max(0, Math.round(timeSeconds)),
     date: new Date().toISOString()
   };
 
@@ -95,7 +98,7 @@ export async function submitScore(name, turns, opponents){
 }
 
 /**
- * Fetch the top N scores, sorted by fewest turns first.
+ * Fetch the top N scores, sorted by highest score first.
  * @param {number} n
  * @returns {Promise<{mode:'global'|'local', scores:Array}>}
  */
@@ -105,7 +108,7 @@ export async function fetchTopScores(n = 10){
   if(firebaseReady && db && firestoreApi){
     try{
       const { collection, query, orderBy, limit, getDocs } = firestoreApi;
-      const q = query(collection(db, COLLECTION_NAME), orderBy("turns", "asc"), limit(n));
+      const q = query(collection(db, COLLECTION_NAME), orderBy("score", "desc"), limit(n));
       const snap = await getDocs(q);
       const scores = [];
       snap.forEach(doc => scores.push(doc.data()));
@@ -117,7 +120,7 @@ export async function fetchTopScores(n = 10){
 
   const scores = getLocalScores()
     .slice()
-    .sort((a,b) => a.turns - b.turns)
+    .sort((a,b) => b.score - a.score)
     .slice(0, n);
   return { mode:"local", scores };
 }

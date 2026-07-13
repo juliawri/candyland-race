@@ -16,10 +16,11 @@
 <header>
   <h1 class="title" id="titleText"></h1>
   <div class="ribbon">🍭 RACE TO THE CASTLE 🍭</div>
-  <p class="subtitle">Draw a card, hop to the next matching candy &amp; race the computer! <span class="duck">🦆</span></p>
+  <p class="subtitle">Answer trivia to race to Candy Castle — right answers move you up, wrong answers set you back! <span class="duck">🍭</span></p>
 
   <div class="hud">
-    <div class="hud-pill" id="turnPill">Turn <span id="turnCount">0</span></div>
+    <div class="hud-pill" id="turnPill">Question <span id="turnCount">0</span></div>
+    <div class="hud-pill" id="timerPill">⏱ <span id="timerCount">0:00</span></div>
     <button class="hud-pill hud-btn" id="rulesBtn" type="button">❓ How to Play</button>
     <button class="hud-pill hud-btn" id="restartBtn" type="button">🔄 Restart</button>
   </div>
@@ -46,23 +47,23 @@
 
     <aside class="side-panel">
       <div class="panel-card" id="playersPanel">
-        <h3>🍬 Racers</h3>
+        <h3>🍬 Your Progress</h3>
         <div id="playersList"></div>
       </div>
 
-      <div class="panel-card draw-card-area">
-        <h3>🎴 Draw a Candy Card</h3>
-        <div class="card-slot" id="cardSlot">
-          <div class="candy-card back" id="candyCard">
-            <span class="card-face-back">🍬</span>
-          </div>
+      <div class="panel-card trivia-area">
+        <h3>🧠 Trivia Time</h3>
+        <div class="question-box">
+          <p class="question-text" id="questionText">Press Start Race to begin!</p>
+          <div class="options-grid" id="optionsGrid"></div>
+          <p class="feedback-msg" id="feedbackMsg"></p>
+          <button class="btn btn-next-question" id="nextQuestionBtn" style="display:none;">▶ Next Question</button>
         </div>
-        <button class="btn btn-draw" id="drawBtn">🎴 Draw Card</button>
       </div>
 
       <div class="panel-card leaderboard-card">
-        <h3>🏆 Fastest Trails <span class="lb-mode" id="lbMode">…</span></h3>
-        <div class="lb-sub">Ranked by fewest turns to reach Candy Castle</div>
+        <h3>🏆 Top Scores <span class="lb-mode" id="lbMode">…</span></h3>
+        <div class="lb-sub">Ranked by highest score (speed + accuracy)</div>
         <ol id="leaderboardList" class="leaderboard-list"><li class="lb-empty">Loading…</li></ol>
         <button class="btn btn-refresh" id="refreshLbBtn" type="button">↻ Refresh</button>
       </div>
@@ -77,15 +78,11 @@
   <div class="modal" id="startModal">
     <div class="modal-emoji">🍭🏰🍬</div>
     <h2>Candy Land Race</h2>
-    <p class="modal-copy">Draw candy cards, hop along the trail, and be first to reach Candy Castle! Fewer turns wins the leaderboard.</p>
+    <p class="modal-copy">Answer trivia questions to race to Candy Castle! Right answers move you forward, wrong answers send you back. Your score rewards speed <b>and</b> accuracy.</p>
     <label class="field-label" for="playerNameInput">Your name</label>
     <input type="text" id="playerNameInput" class="text-input" maxlength="18" placeholder="Enter your name" value="Player">
-    <label class="field-label" for="opponentCount">Computer opponents</label>
-    <select id="opponentCount" class="text-input">
-      <option value="1">1 opponent</option>
-      <option value="2" selected>2 opponents</option>
-      <option value="3">3 opponents</option>
-    </select>
+    <label class="field-label">Choose your icon</label>
+    <div class="emoji-grid" id="emojiGrid"></div>
     <button class="btn btn-next" id="startGameBtn">🎉 Start Race!</button>
   </div>
 </div>
@@ -97,11 +94,13 @@
     <div class="modal-emoji">📜🍬</div>
     <h2>How to Play</h2>
     <div class="modal-section show">
-      Tap <b>Draw Card</b> to reveal a candy colour. Your piece hops forward to the next space of that colour. Then each computer racer takes its turn automatically.
+      Answer each trivia question by picking one of the 4 options. Get it <b>right</b> and you hop 1 space forward. Get it <b>wrong</b> and you slide 1 space back.
       <br><br>
-      Watch out for special spaces: <b>🍫 Molasses Swamp</b> makes you skip your next turn, and <b>🍭 Gumdrop Pass</b> zooms you forward!
+      Race solo — there are no computer opponents. Just you against the trail!
       <br><br>
-      First to reach <b>🏰 Candy Castle</b> wins. If you win, your <b>turn count</b> is saved to the leaderboard — fewer turns is better!
+      First to reach <b>🏰 Candy Castle</b> wins. Your final <b>score</b> combines how fast you finished and how many questions it took — fewer questions and less time means a higher score.
+      <br><br>
+      ⚠️ If you run out of trivia questions before reaching the castle, your score is <b>0</b> — so answer carefully!
     </div>
   </div>
 </div>

@@ -1,8 +1,10 @@
 # 🍬 Candy Land Race
 
-A browser game inspired by Candy Land: draw candy cards, hop along the trail, and race 1–3 computer
-opponents to Candy Castle. Winning games are ranked on a leaderboard by **fewest turns taken** (lower
-is better). Pure HTML/CSS/JS — no build step, ready for GitHub Pages.
+A browser trivia game inspired by Candy Land: answer trivia questions solo to hop along the trail to
+Candy Castle. Right answers move you forward a spot, wrong answers send you back a spot. Winning games
+are ranked on a leaderboard by **score**, a combination of speed and how many questions it took (higher
+is better). Run out of trivia questions before reaching the castle and your score is 0. Pure HTML/CSS/JS
+— no build step, ready for GitHub Pages.
 
 ## Play it locally
 
@@ -19,12 +21,12 @@ Any other static server works too (`npx serve`, VS Code's "Live Server" extensio
 
 ## How the game works
 
-- Click **Draw Card** to reveal a candy colour. Your piece hops to the next space of that colour.
-- After your turn, each computer opponent automatically takes its turn.
-- Two special spaces exist: **🍫 Molasses Swamp** (skip your next turn) and **🍭 Gumdrop Pass** (jump
-  ahead).
-- First racer to reach **🏰 Candy Castle** wins. If *you* win, your turn count is saved to the
-  leaderboard.
+- Pick your name and an emoji icon, then answer trivia questions one at a time.
+- Answer **correctly** and you hop 1 space forward. Answer **incorrectly** and you slide 1 space back.
+- It's solo — there are no computer opponents.
+- First (and only) racer to reach **🏰 Candy Castle** wins. Your **score** combines your total time and
+  the number of questions it took — faster and fewer questions means a higher score.
+- If you run out of trivia questions before reaching the castle, your score is **0**.
 
 ## Leaderboard: local vs. global
 
@@ -82,12 +84,12 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /candyland_scores/{scoreId} {
       allow read: if true;
-      allow create: if request.resource.data.keys().hasAll(['name','turns','opponents','date'])
+      allow create: if request.resource.data.keys().hasAll(['name','score','turns','timeSeconds','date'])
                     && request.resource.data.name is string
                     && request.resource.data.name.size() <= 18
-                    && request.resource.data.turns is number
-                    && request.resource.data.turns > 0
-                    && request.resource.data.turns < 1000;
+                    && request.resource.data.score is number
+                    && request.resource.data.score >= 0
+                    && request.resource.data.score < 100000;
       allow update, delete: if false;
     }
   }
@@ -125,6 +127,6 @@ Every time you `git push` new changes to `main`, GitHub Pages redeploys automati
 |---------------------|---------|
 | `index.html`        | Page structure: board, controls, modals, leaderboard panel |
 | `style.css`         | Candy Land visual theme |
-| `game.js`           | Game engine: board, turns, AI opponents, win/lose flow |
+| `game.js`           | Game engine: board, trivia questions, scoring, win/lose flow |
 | `leaderboard.js`    | Score read/write, with automatic Firebase → localStorage fallback |
 | `firebase-config.js`| Your Firebase project keys (edit this to enable the global leaderboard) |
