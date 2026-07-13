@@ -13,10 +13,11 @@
 // ─────────────────────────────────────────────────────────────────────────
 
 export const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAOwsV0KTFPcElw3_E9ZoWXalwpWuWcKMc",
+  authDomain: "candy-land-race.firebaseapp.com",
+  projectId: "candy-land-race",
+  storageBucket: "candy-land-race.firebasestorage.app",
+  messagingSenderId: "761431671335",
+  appId: "1:761431671335:web:6e1a9e8948adfc59a4c402",
+  measurementId: "G-7D1PPWEKQD"
 };
