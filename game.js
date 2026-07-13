@@ -136,7 +136,6 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
   var turnCount = 0;
   var gameOver = false;
   var spacePoints = [];
-  var startPoint = { x:50, y:2 };
   var chosenEmoji = EMOJI_CHOICES[0];
 
   var questionPool = [];
@@ -279,7 +278,6 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
       var pt = pathEl.getPointAtLength(d);
       spacePoints.push({ x: pt.x / VB_W * 100, y: pt.y / VB_H * 100 });
     }
-    startPoint = { x: spacePoints[0].x, y: clamp(spacePoints[0].y - 3, 0, 100) };
 
     spacesLayer.innerHTML = '';
     for(var s=0; s<NUM_COLOR_SPACES; s++){
@@ -302,9 +300,8 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
   }
 
   function pointForPos(pos){
-    if(pos < 0) return startPoint;
     if(pos >= FINISH_INDEX) return spacePoints[FINISH_INDEX];
-    return spacePoints[pos];
+    return spacePoints[clamp(pos, 0, FINISH_INDEX)];
   }
 
   function renderTokens(){
@@ -346,8 +343,7 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
     if(player.finished){
       statusEl.textContent = '🏰 Reached the castle!';
     } else {
-      var posLabel = player.pos < 0 ? 'Start' : ('Space ' + (player.pos+1) + ' / ' + NUM_COLOR_SPACES);
-      statusEl.textContent = posLabel;
+      statusEl.textContent = 'Space ' + (player.pos+1) + ' / ' + NUM_COLOR_SPACES;
     }
     info.appendChild(nameEl);
     info.appendChild(statusEl);
@@ -455,14 +451,13 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
     turnCountEl.textContent = turnCount;
 
     if(correct){
-      player.pos = clamp(player.pos + 1, -1, FINISH_INDEX);
+      player.pos = clamp(player.pos + 1, 0, FINISH_INDEX);
       feedbackMsg.textContent = '✅ Correct! Moving forward a spot.';
       feedbackMsg.classList.add('good');
       showToast('✅ Correct!');
       celebrateCorrect();
     } else {
-      var backFloor = player.pos >= 0 ? 0 : -1;
-      player.pos = clamp(player.pos - 1, backFloor, FINISH_INDEX);
+      player.pos = clamp(player.pos - 1, 0, FINISH_INDEX);
       feedbackMsg.textContent = '❌ Not quite — the answer was "' + correctText + '". Sliding back a spot.';
       feedbackMsg.classList.add('bad');
       showToast('❌ Wrong — back a spot!');
@@ -533,7 +528,7 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
       name: name,
       emoji: chosenEmoji,
       color: '#ff2f92',
-      pos: -1,
+      pos: 0,
       finished: false
     };
 
@@ -616,7 +611,7 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
       endModalContent.innerHTML =
         '<div class="finale-emoji">😢🍬</div>' +
         '<h2>Out of trivia questions!</h2>' +
-        '<p class="modal-copy">You ran out of questions before reaching Candy Castle (made it to space ' + (player.pos+1<=0?'Start':(player.pos+1)) + ' / ' + NUM_COLOR_SPACES + '). Your score is <b>0</b> — give it another go!</p>' +
+        '<p class="modal-copy">You ran out of questions before reaching Candy Castle (made it to space ' + (player.pos+1) + ' / ' + NUM_COLOR_SPACES + '). Your score is <b>0</b> — give it another go!</p>' +
         '<button class="btn btn-next" id="playAgainBtn">🔄 Try Again</button>';
       document.getElementById('playAgainBtn').addEventListener('click', function(){
         closeOverlay(endOverlay);
