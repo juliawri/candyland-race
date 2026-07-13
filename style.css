@@ -47,7 +47,7 @@ h1,h2,h3, .display{ font-family:'Baloo 2', cursive; }
 }
 
 /* ---------- header ---------- */
-header{ position:relative; z-index:55; text-align:center; padding: 2rem 1rem 1rem; }
+header{ position:relative; z-index:2; text-align:center; padding: 2rem 1rem 1rem; }
 
 h1.title{
   margin: 0.2rem 0 0.1rem;
@@ -330,6 +330,10 @@ main{ position:relative; z-index:2; padding: 0.5rem 1rem 3rem; }
 }
 .overlay.open{ opacity:1; pointer-events:all; }
 #rulesOverlay{ z-index: 60; }
+
+/* trivia backdrop shouldn't trap clicks meant for the header (Restart / How to Play) */
+#triviaOverlay.open{ pointer-events:none; }
+#triviaOverlay.open .trivia-modal{ pointer-events:all; }
 .modal{
   background: var(--cream);
   border-radius: 26px;
