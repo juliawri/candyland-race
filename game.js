@@ -461,7 +461,8 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
       showToast('✅ Correct!');
       celebrateCorrect();
     } else {
-      player.pos = clamp(player.pos - 1, -1, FINISH_INDEX);
+      var backFloor = player.pos >= 0 ? 0 : -1;
+      player.pos = clamp(player.pos - 1, backFloor, FINISH_INDEX);
       feedbackMsg.textContent = '❌ Not quite — the answer was "' + correctText + '". Sliding back a spot.';
       feedbackMsg.classList.add('bad');
       showToast('❌ Wrong — back a spot!');
