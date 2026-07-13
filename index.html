@@ -18,11 +18,13 @@
   <div class="ribbon">🍭 RACE TO THE CASTLE 🍭</div>
   <p class="subtitle">Answer trivia to race to Candy Castle — right answers move you up, wrong answers set you back! <span class="duck">🍭</span></p>
 
+  <button class="btn btn-next hero-start-btn" id="heroStartBtn" type="button">🎉 Start Race!</button>
+
   <div class="hud">
     <div class="hud-pill" id="turnPill">Question <span id="turnCount">0</span></div>
     <div class="hud-pill" id="timerPill">⏱ <span id="timerCount">0:00</span></div>
     <button class="hud-pill hud-btn" id="rulesBtn" type="button">❓ How to Play</button>
-    <button class="hud-pill hud-btn" id="leaderboardPageBtn" type="button">🏆 Leaderboard</button>
+    <a class="hud-pill hud-btn" id="leaderboardPageBtn" href="leaderboard.html">🏆 Leaderboard</a>
     <button class="hud-pill hud-btn" id="restartBtn" type="button">🔄 Restart</button>
   </div>
 </header>
@@ -65,7 +67,7 @@
 <footer>Made with 🍬 + 💻 — a Candy Land‑style race game</footer>
 
 <!-- Start / setup modal -->
-<div class="overlay open" id="startOverlay">
+<div class="overlay" id="startOverlay">
   <div class="modal" id="startModal">
     <div class="modal-emoji">🍭🏰🍬</div>
     <h2>Candy Land Race</h2>
@@ -93,18 +95,6 @@
       <br><br>
       ⚠️ If you run out of trivia questions before reaching the castle, your score is <b>0</b> — so answer carefully!
     </div>
-  </div>
-</div>
-
-<!-- Leaderboard modal -->
-<div class="overlay" id="leaderboardOverlay">
-  <div class="modal leaderboard-modal" id="leaderboardModal">
-    <button class="modal-close" id="leaderboardModalClose" aria-label="Close">✕</button>
-    <div class="modal-emoji">🏆🍬</div>
-    <h2>Top Scores <span class="lb-mode" id="lbModeModal">…</span></h2>
-    <div class="lb-sub">Ranked by highest score (speed + accuracy)</div>
-    <ol id="leaderboardModalList" class="leaderboard-list leaderboard-list-full"><li class="lb-empty">Loading…</li></ol>
-    <button class="btn btn-refresh" id="refreshLbModalBtn" type="button">↻ Refresh</button>
   </div>
 </div>
 

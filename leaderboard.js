@@ -75,9 +75,9 @@ export async function submitScore(name, score, turns, timeSeconds){
   await readyPromise;
   const entry = {
     name: String(name || "Player").slice(0, 18),
-    score: Math.max(0, Math.round(score)),
-    turns: Math.max(1, Math.round(turns)),
-    timeSeconds: Math.max(0, Math.round(timeSeconds)),
+    score: Number.isFinite(score) ? Math.max(0, Math.round(score)) : 0,
+    turns: Number.isFinite(turns) ? Math.max(1, Math.round(turns)) : 1,
+    timeSeconds: Number.isFinite(timeSeconds) ? Math.max(0, Math.round(timeSeconds)) : 0,
     date: new Date().toISOString()
   };
 
@@ -120,7 +120,7 @@ export async function fetchTopScores(n = 10){
 
   const scores = getLocalScores()
     .slice()
-    .sort((a,b) => b.score - a.score)
+    .sort((a,b) => (Number(b.score) || 0) - (Number(a.score) || 0))
     .slice(0, n);
   return { mode:"local", scores };
 }

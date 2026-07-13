@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leaderboard — Candy Land Race 🍬</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1 class="title">🏆 Leaderboard</h1>
+  <div class="ribbon">🍭 TOP CANDY RACERS 🍭</div>
+  <p class="subtitle">See who's raced to Candy Castle the fastest! <span class="duck">🍭</span></p>
+
+  <div class="hud">
+    <a class="hud-pill hud-btn" href="index.html">⬅ Back to Race</a>
+  </div>
+</header>
+
+<main>
+  <div class="lb-page-wrap">
+    <div class="panel-card leaderboard-card">
+      <h3>🏆 Top Scores <span class="lb-mode" id="lbMode">…</span></h3>
+      <div class="lb-sub">Ranked by highest score (speed + accuracy)</div>
+      <ol id="leaderboardList" class="leaderboard-list leaderboard-list-full"><li class="lb-empty">Loading…</li></ol>
+      <button class="btn btn-refresh" id="refreshLbBtn" type="button">↻ Refresh</button>
+    </div>
+  </div>
+</main>
+
+<footer>Made with 🍬 + 💻 — a Candy Land‑style race game</footer>
+
+<script type="module" src="leaderboard-page.js"></script>
+</body>
+</html>
