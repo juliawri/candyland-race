@@ -166,7 +166,8 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
   var questionText = document.getElementById('questionText');
   var optionsGrid = document.getElementById('optionsGrid');
   var feedbackMsg = document.getElementById('feedbackMsg');
-  var nextQuestionBtn = document.getElementById('nextQuestionBtn');
+  var triviaOverlay = document.getElementById('triviaOverlay');
+  var triviaModal = document.getElementById('triviaModal');
 
   var lbMode = document.getElementById('lbMode');
   var leaderboardList = document.getElementById('leaderboardList');
@@ -404,7 +405,6 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
     questionText.textContent = q.q;
     feedbackMsg.textContent = '';
     feedbackMsg.className = 'feedback-msg';
-    nextQuestionBtn.style.display = 'none';
 
     var displayOptions = shuffle(q.options);
     optionsGrid.innerHTML = '';
@@ -431,6 +431,19 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
     });
   }
 
+  function celebrateCorrect(){
+    triviaModal.classList.remove('flash-wrong');
+    triviaModal.classList.add('flash-correct');
+    setTimeout(function(){ triviaModal.classList.remove('flash-correct'); }, 700);
+    burstConfetti(22, {pieces:['🎉','✨','🍬','⭐','🍭']});
+  }
+
+  function shakeWrong(){
+    triviaModal.classList.remove('flash-correct');
+    triviaModal.classList.add('flash-wrong');
+    setTimeout(function(){ triviaModal.classList.remove('flash-wrong'); }, 500);
+  }
+
   async function onAnswer(selectedText, correctText){
     if(answered || gameOver) return;
     answered = true;
@@ -446,17 +459,22 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
       feedbackMsg.textContent = '✅ Correct! Moving forward a spot.';
       feedbackMsg.classList.add('good');
       showToast('✅ Correct!');
+      celebrateCorrect();
     } else {
       player.pos = clamp(player.pos - 1, -1, FINISH_INDEX);
       feedbackMsg.textContent = '❌ Not quite — the answer was "' + correctText + '". Sliding back a spot.';
       feedbackMsg.classList.add('bad');
       showToast('❌ Wrong — back a spot!');
+      shakeWrong();
     }
 
+    await sleep(900);
+
+    closeOverlay(triviaOverlay);
     renderTokens();
     renderPlayers();
 
-    await sleep(650);
+    await sleep(750);
 
     if(player.pos >= FINISH_INDEX){
       player.finished = true;
@@ -471,10 +489,9 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
       return;
     }
 
-    nextQuestionBtn.style.display = 'block';
+    loadNextQuestion();
+    openOverlay(triviaOverlay);
   }
-
-  nextQuestionBtn.addEventListener('click', loadNextQuestion);
 
   function escapeHtml(str){
     var div = document.createElement('div');
@@ -533,12 +550,13 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
 
     startTimer();
     loadNextQuestion();
+    openOverlay(triviaOverlay);
   }
 
   async function endGame(won, reason){
     gameOver = true;
     stopTimer();
-    nextQuestionBtn.style.display = 'none';
+    closeOverlay(triviaOverlay);
     optionsGrid.querySelectorAll('.option-btn').forEach(function(btn){ btn.disabled = true; });
     renderPlayers();
 
@@ -618,6 +636,7 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
     gameOver = true;
     stopTimer();
     closeOverlay(endOverlay);
+    closeOverlay(triviaOverlay);
     openOverlay(startOverlay);
   });
   rulesBtn.addEventListener('click', function(){ openOverlay(rulesOverlay); });

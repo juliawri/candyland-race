@@ -51,16 +51,6 @@
         <div id="playersList"></div>
       </div>
 
-      <div class="panel-card trivia-area">
-        <h3>🧠 Trivia Time</h3>
-        <div class="question-box">
-          <p class="question-text" id="questionText">Press Start Race to begin!</p>
-          <div class="options-grid" id="optionsGrid"></div>
-          <p class="feedback-msg" id="feedbackMsg"></p>
-          <button class="btn btn-next-question" id="nextQuestionBtn" style="display:none;">▶ Next Question</button>
-        </div>
-      </div>
-
       <div class="panel-card leaderboard-card">
         <h3>🏆 Top Scores <span class="lb-mode" id="lbMode">…</span></h3>
         <div class="lb-sub">Ranked by highest score (speed + accuracy)</div>
@@ -109,6 +99,18 @@
 <div class="overlay" id="endOverlay">
   <div class="modal" id="endModal">
     <div id="endModalContent"></div>
+  </div>
+</div>
+
+<!-- Trivia question modal -->
+<div class="overlay" id="triviaOverlay">
+  <div class="modal trivia-modal" id="triviaModal">
+    <h2>🧠 Trivia Time</h2>
+    <div class="question-box">
+      <p class="question-text" id="questionText">Press Start Race to begin!</p>
+      <div class="options-grid" id="optionsGrid"></div>
+      <p class="feedback-msg" id="feedbackMsg"></p>
+    </div>
   </div>
 </div>
 
