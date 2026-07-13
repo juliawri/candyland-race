@@ -36,7 +36,7 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
   };
 
   var PLAYER_TEMPLATES = [
-    { type:'human', emoji:'🙂', color:'#ff2f92' },
+    { type:'human', emoji:'🤗', color:'#ff2f92' },
     { type:'ai', emoji:'🤖', color:'#27AAE1', name:'Robo Randy' },
     { type:'ai', emoji:'🦆', color:'#39B54A', name:'Ducky Dana' },
     { type:'ai', emoji:'🎩', color:'#F7941E', name:'Top Hat Theo' }
@@ -475,6 +475,7 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
       });
 
       playAgainBtn.addEventListener('click', function(){
+        closeOverlay(endOverlay);
         openOverlay(startOverlay);
       });
     } else {
@@ -484,6 +485,7 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
         '<p class="modal-copy">They reached Candy Castle first. You were on turn ' + turnCount + '. Only the human racer\'s wins count on the leaderboard — give it another go!</p>' +
         '<button class="btn btn-next" id="playAgainBtn">🔄 Try Again</button>';
       document.getElementById('playAgainBtn').addEventListener('click', function(){
+        closeOverlay(endOverlay);
         openOverlay(startOverlay);
       });
     }
@@ -505,6 +507,7 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
   startGameBtn.addEventListener('click', newGame);
   restartBtn.addEventListener('click', function(){
     gameOver = true;
+    closeOverlay(endOverlay);
     openOverlay(startOverlay);
   });
   rulesBtn.addEventListener('click', function(){ openOverlay(rulesOverlay); });
