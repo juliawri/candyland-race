@@ -297,6 +297,10 @@ main{ position:relative; z-index:2; padding: 0.5rem 1rem 3rem; }
 .lb-turns{ font-family:'Baloo 2',cursive; font-weight:800; color: var(--deep-pink); }
 .lb-empty{ color:#999; font-weight:600; font-size:0.85rem; padding: 0.5rem 0.2rem; }
 
+.leaderboard-modal{ max-width: 560px; text-align:center; }
+.leaderboard-modal .lb-sub{ font-size:0.78rem; font-weight:700; color:#888; margin: -0.2rem 0 0.9rem; }
+.leaderboard-list-full{ max-height: 55vh; text-align:left; }
+
 /* ---------- toast ---------- */
 #toast-stack{
   position: fixed; top: 14px; left:50%; transform:translateX(-50%);

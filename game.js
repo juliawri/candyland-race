@@ -172,6 +172,13 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
   var leaderboardList = document.getElementById('leaderboardList');
   var refreshLbBtn = document.getElementById('refreshLbBtn');
 
+  var leaderboardPageBtn = document.getElementById('leaderboardPageBtn');
+  var leaderboardOverlay = document.getElementById('leaderboardOverlay');
+  var leaderboardModalClose = document.getElementById('leaderboardModalClose');
+  var lbModeModal = document.getElementById('lbModeModal');
+  var leaderboardModalList = document.getElementById('leaderboardModalList');
+  var refreshLbModalBtn = document.getElementById('refreshLbModalBtn');
+
   var startOverlay = document.getElementById('startOverlay');
   var playerNameInput = document.getElementById('playerNameInput');
   var emojiGrid = document.getElementById('emojiGrid');
@@ -644,31 +651,51 @@ import { submitScore, fetchTopScores, isGlobalLeaderboardConfigured } from "./le
 
   /* ============================== LEADERBOARD ============================== */
 
-  async function loadLeaderboard(){
+  function renderLeaderboardInto(listEl, scores){
+    if(!scores.length){
+      listEl.innerHTML = '<li class="lb-empty">No races finished yet — be the first! 🏰</li>';
+      return;
+    }
+    listEl.innerHTML = '';
+    scores.forEach(function(s, i){
+      var li = document.createElement('li');
+      li.innerHTML =
+        '<span class="lb-rank">#' + (i+1) + '</span>' +
+        '<span class="lb-name">' + escapeHtml(s.name || 'Player') + '</span>' +
+        '<span class="lb-turns">' + s.score + ' pts</span>';
+      listEl.appendChild(li);
+    });
+  }
+
+  async function loadLeaderboard(n){
     leaderboardList.innerHTML = '<li class="lb-empty">Loading…</li>';
+    leaderboardModalList.innerHTML = '<li class="lb-empty">Loading…</li>';
     try{
-      var result = await fetchTopScores(10);
-      lbMode.textContent = result.mode === 'global' ? '🌐 Global' : '💻 This device';
-      if(!result.scores.length){
-        leaderboardList.innerHTML = '<li class="lb-empty">No races finished yet — be the first! 🏰</li>';
-        return;
-      }
-      leaderboardList.innerHTML = '';
-      result.scores.forEach(function(s, i){
-        var li = document.createElement('li');
-        li.innerHTML =
-          '<span class="lb-rank">#' + (i+1) + '</span>' +
-          '<span class="lb-name">' + escapeHtml(s.name || 'Player') + '</span>' +
-          '<span class="lb-turns">' + s.score + ' pts</span>';
-        leaderboardList.appendChild(li);
-      });
+      var result = await fetchTopScores(n || 10);
+      var modeLabel = result.mode === 'global' ? '🌐 Global' : '💻 This device';
+      lbMode.textContent = modeLabel;
+      lbModeModal.textContent = modeLabel;
+      renderLeaderboardInto(leaderboardList, result.scores);
+      renderLeaderboardInto(leaderboardModalList, result.scores);
     }catch(err){
       console.error('[game] failed to load leaderboard', err);
       leaderboardList.innerHTML = '<li class="lb-empty">Couldn\'t load leaderboard.</li>';
+      leaderboardModalList.innerHTML = '<li class="lb-empty">Couldn\'t load leaderboard.</li>';
     }
   }
 
-  refreshLbBtn.addEventListener('click', loadLeaderboard);
+  refreshLbBtn.addEventListener('click', function(){ loadLeaderboard(10); });
+  refreshLbModalBtn.addEventListener('click', function(){ loadLeaderboard(50); });
+
+  leaderboardPageBtn.addEventListener('click', function(){
+    openOverlay(leaderboardOverlay);
+    loadLeaderboard(50);
+  });
+  leaderboardModalClose.addEventListener('click', function(){ closeOverlay(leaderboardOverlay); });
+  leaderboardOverlay.addEventListener('click', function(e){ if(e.target === leaderboardOverlay) closeOverlay(leaderboardOverlay); });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeOverlay(leaderboardOverlay); }
+  });
 
   /* ============================== INIT ============================== */
 
